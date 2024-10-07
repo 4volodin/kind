@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: mkcert-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - hello.dev.kind
+      secretName: hello-ingress-cert
+  rules:
+    - host: hello.dev.kind
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: sample-app-svc
+              port:
+                number: 80
+

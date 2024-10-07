@@ -1,0 +1,40 @@
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        oidc-issuer-url: "https://kc.truedev.ru/realms/truedev"
+        oidc-client-id: "devbox-kind"
+        oidc-username-claim: "email"
+        # oidc-groups-prefix: "oidc:"
+        oidc-groups-claim: "groups"
+  extraPortMappings:
+  # ingress
+  - containerPort: 30080
+    hostPort: 30080
+    listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
+    protocol: tcp # Optional, defaults to tcp
+  - containerPort: 30443
+    hostPort: 30443
+  # postgres dataabse
+  - containerPort: 30321
+    hostPort: 30321
+  # Grafana
+  - containerPort: 30300
+    hostPort: 30300
+  # vault
+  - containerPort: 30400
+    hostPort: 30400
+  # debug port
+  - containerPort: 30500
+    hostPort: 30500
+  # kafka
+  - containerPort: 30600
+    hostPort: 30600
+- role: worker
+- role: worker
+- role: worker
